@@ -37,21 +37,20 @@ app
     .use(function(req, res, next) {
         var queryData = url.parse(req.url, true).query;
         if (queryData.action != undefined && queryData.action === 'find') {
-            console.log(globalFileName);
-            const {spawn} = require('child_process');
-            const ls = spawn('ls', ['-lh', '/usr']);
-            //const ls = spawn('/Users/dsnyder/kaldi/kaldi-xvector-test/egs/sre16/v2/test_mp3.sh', ['/Users/dsnyder/Sites/' + fileName + ".mp3"], {cwd: '/Users/dsnyder/kaldi/kaldi-xvector-test/egs/sre16/v2/'});
-            ls.stdout.on('data', (data) => {
-                res.writeHead(200, {"Content-Type": "application/json"});
-                res.end(JSON.stringify(`${data}`));
-                next();
-            });
-            ls.stderr.on('data', (data) => {
-                console.log(`tderr: ${data}`);
-            });
-            ls.on('close', (code) => {
-                console.log(`child process exited with code ${code}`);
-            });
+              const {spawn} = require('child_process');
+              const ls = spawn('ls', ['-lh', '/usr']);
+              ls.stdout.on('data', (data) => {
+                  console.log('ever get the ls result?');
+                  res.writeHead(200, {"Content-Type": "application/json"});
+                  res.end(JSON.stringify(`${data}`));
+                  next();
+              });
+              ls.stderr.on('data', (data) => {
+                  console.log(`tderr: ${data}`);
+              });
+              ls.on('close', (code) => {
+                  console.log(`child process exited with code ${code}`);
+              });
         } else if (queryData.action != undefined && queryData.action === 'enroll') {
             if (queryData.enrollName == "") {
                 res.writeHead(400, {"Content-Type": "application/json"});
@@ -67,6 +66,23 @@ app
                 res.end(JSON.stringify(`${data}`));
                 next();
             }
+        } else if (queryData.action != undefined && queryData.action === 'youtubefind') {
+          if (queryData.url == "") {
+              console.log('here, should have thrown an error');
+              res.writeHead(400, {"Content-Type": "application/json"});
+              res.end(JSON.stringify({enrollError: 'URL is missing'}));
+          } else {
+
+              let url = queryData.url;
+              console.log(queryData.start);
+
+              /* DAVID, execute the enrollment script here. */
+              /* Save the result into data*/
+              let data = "Jane Doe: 0.006 | Joe Duh: 0.005 | John Poe: 0.004";
+              res.writeHead(200, {"Content-Type": "application/json"});
+              res.end(JSON.stringify(`${data}`));
+              next();
+          }
         } else {
             next();
         }
@@ -85,7 +101,7 @@ server.on('connection', function(client) {
     console.log("new connection...");
     var fileWriter = null;
     var writeStream = null;
-    
+
     var userAgent  =client._socket.upgradeReq.headers['user-agent'];
     uaParser.setUA(userAgent);
     var ua = uaParser.getResult();
@@ -117,7 +133,7 @@ server.on('connection', function(client) {
         };
     });
 
-    
+
     client.on('close', function(req, res) {
         if ( fileWriter != null ) {
             fileWriter.end();

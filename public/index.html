@@ -5,6 +5,7 @@
     <title>Audio Streamer</title>
 
     <link rel="stylesheet" href="bootstrap-3.2.0-dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.13/css/all.css" integrity="sha384-DNOHZ68U8hZfKXOrtjWvjxusGo9WQnrNx2sqG0tfsghAvtVlRW3tvkXWZh58N9jp" crossorigin="anonymous">
     <link rel="stylesheet" href="style/site.css">
 
     <link rel="icon" type="image/png"  href="img/icon.png">
@@ -25,6 +26,8 @@
                 });
         }
         function actionFind() {
+          console.log('got into actionFind');
+            document.getElementById('result').innerHTML = '<div style="text-align: center; font-size: 50px;"><i class="fas fa-spinner fa-spin"></i></div>';
             fetch('/?action=find')
                 .then(function(response) {
                     return response.json();
@@ -33,6 +36,19 @@
                     console.log(myJson);
                     document.getElementById('result').innerHTML = myJson;
                 });
+        }
+        function youtubeFind() {
+          let url = $('#youtubeURL').val();
+          let start = $('#youtubeStartTime').val();
+          let end = $('#youtubeEndTime').val();
+          fetch(`/?action=youtubefind&url=${url}&start=${start}&end=${end}`)
+              .then(function(response) {
+                  return response.json();
+              })
+              .then(function(myJson) {
+                  console.log(myJson);
+                  document.getElementById('result').innerHTML = myJson;
+              });
         }
     </script>
 </head>
@@ -54,6 +70,25 @@
                             </div>
                             <div class="red-round-button col-md-12 padding-top-md">
                                 <div class="socket"><div id="record-button" class="button"></div></div>
+                            </div>
+                        </div>
+                        <div class="row padding-top-md">
+                            <div class="col-md-12">
+                                <div class="col-md-offset-4 col-md-4 padding-bottom-md">
+                                    <form id="formEnroll" class="form-inline">
+                                        <input type="hidden" name="action" value="action">
+                                        <div class="form-group">
+                                            <label for="enrollName">Name</label>
+                                            <input type="text" class="form-control" id="enrollName" name="enrollName">
+                                        </div>
+                                        <input type="button" id="enroll-button" value="Enroll" class="btn btn-primary" onclick="actionEnroll()" />
+                                    </form>
+                                </div>
+                                <div class="col-md-offset-4 col-md-4 padding-top-md">
+                                    <form id="formFind" class="form-inline">
+                                        <button type="button" class="btn btn-success" id="find-button" onclick="actionFind()" ><span class='glyphicon glyphicon-search'></span> Find</button>
+                                    </form>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -82,28 +117,28 @@
                                 </form>
                             </div>
                         </div>
+                        <div class="row padding-top-md">
+                            <div class="col-md-12">
+                                <div class="col-md-offset-4 col-md-4 padding-bottom-md">
+                                    <form id="formEnroll" class="form-inline">
+                                        <input type="hidden" name="action" value="action">
+                                        <div class="form-group">
+                                            <label for="enrollName">Name</label>
+                                            <input type="text" class="form-control" id="enrollName" name="enrollName">
+                                        </div>
+                                        <input type="button" id="enroll-button" value="Enroll" class="btn btn-primary" onclick="youtubeEnroll()" />
+                                    </form>
+                                </div>
+                                <div class="col-md-offset-4 col-md-4 padding-top-md">
+                                    <form id="formFind" class="form-inline">
+                                        <button type="button" class="btn btn-success" id="find-button" onclick="youtubeFind()" ><span class='glyphicon glyphicon-search'></span> Find</button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
-            </div>
-        </div>
-        <div class="row padding-top-md">
-            <div class="col-md-12">
-                <div class="col-md-offset-4 col-md-4 padding-bottom-md">
-                    <form id="formEnroll" class="form-inline">
-                        <input type="hidden" name="action" value="action">
-                        <div class="form-group">
-                            <label for="enrollName">Name</label>
-                            <input type="text" class="form-control" id="enrollName" name="enrollName">
-                        </div>
-                        <input type="button" id="enroll-button" value="Enroll" class="btn btn-primary" onclick="actionEnroll()" />
-                    </form>
-                </div>
-                <div class="col-md-offset-4 col-md-4 padding-top-md">
-                    <form id="formFind" class="form-inline">
-                        <button type="button" class="btn btn-success" id="find-button" onclick="actionFind()" ><span class='glyphicon glyphicon-search'></span> Find</button>
-                    </form>
-                </div>
             </div>
         </div>
         <div class="row padding-top-md">
@@ -119,6 +154,7 @@
         $('#myTab a').click(function (e) {
             e.preventDefault()
             $(this).tab('show')
+            document.getElementById('result').innerHTML = '';
         });
     </script>
     <script src="js/binary.js"></script>
