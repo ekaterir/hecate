@@ -187,7 +187,7 @@ class App extends Component {
           <section className="col-4 enrollments-list rounded">
             <div className="pt-3"></div>
             <h4>Enrolled Speakers { !loadingEnrollments && `(${this.state.originalEnrollments.length})`}</h4>
-            <p>Sort by:
+            <p>Sort:
               <span className="pr-3"></span>
               <input className="btn btn-light" type="button" value="Alphabetically" onClick={this.getEnrollments}/>
               <span className="pr-3"></span>
