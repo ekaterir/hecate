@@ -1,1 +1,78 @@
-@import "loader.css";
+@import "css/bootstrap-grid.min.css";
+@import "css/bootstrap-reboot.min.css";
+@import "css/bootstrap.min.css";
+@import "fontawesome-free-5.3.1-web/css/fontawesome.min.css";
+
+body, html {
+  margin: 0;
+  overflow: hidden;
+  height:100%;
+  background-color: #f3f3f3;
+}
+
+#root {
+  height: inherit;
+}
+
+main {
+  height: inherit;
+}
+
+main > div.row {
+  height: 100%;
+}
+
+.enrollments-list {
+  margin: 0;
+  overflow: hidden;
+  height: 90%;
+  background-color: #FFBC42;
+}
+
+.enrollments-list h4 {
+  color: #6b1639;
+}
+
+.create-embedding {
+  background-color: #F68657;
+  height: 30%;
+  color:#6b1639;
+}
+
+.actions {
+  color: white;
+  background-color: #9055A2;
+  height: 30%;
+}
+
+.list-group-flush {
+  height: 74%;
+  background-color: white;
+  overflow-y: scroll;
+}
+
+.black-text-color {
+  color: black;
+  font-size: 16px;
+}
+
+.cursor-pointer {
+  cursor: pointer;
+}
+
+.enrollments-list ul > li:hover {
+  color: white;
+  background-color: #8F2D56;
+}
+
+.btn {
+  padding: 0 .75rem;
+}
+
+.larger-font-size {
+  font-size: 20px;
+}
+
+.form-control {
+  color: black;
+}

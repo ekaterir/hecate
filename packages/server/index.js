@@ -57,4 +57,62 @@ app.post('/embeddings', (req, res) => {
   });
 })
 
+app.get('/verify', (req, res) => {
+  const {spawn} = require('child_process');
+  const personName = req.query.personName.replace(/ /g , "_");
+  const verify = spawn('./verify.sh', [ personName ], {cwd: process.env.COMMANDS_EXECUTION_DIRECTORY });
+  result = '';
+  verify.stdout.on('data', (chunk) => {
+    result += chunk.toString('utf-8');
+  });
+  verify.stderr.on('data', (data) => {
+      console.log(`tderr: ${data}`);
+  });
+  verify.on('close', (code) => {
+      res.end(JSON.stringify(result));
+  });
+})
+
+app.post('/enroll', (req, res) => {
+  const {spawn} = require('child_process');
+  const personName = req.body.personName.replace(/ /g , "_");
+  const enroll = spawn('./enroll.sh', [ personName ], {cwd: process.env.COMMANDS_EXECUTION_DIRECTORY });
+  result = '';
+  enroll.stdout.on('data', (chunk) => {
+    result += chunk.toString('utf-8');
+  });
+  enroll.stderr.on('data', (data) => {
+      console.log(`tderr: ${data}`);
+  });
+  enroll.on('close', (code) => {
+      const makeEnrollments = spawn('./make_enrollments.sh', [], {cwd: process.env.COMMANDS_EXECUTION_DIRECTORY });
+      enroll.stdout.on('data', (chunk) => {
+        result += chunk.toString('utf-8');
+      });
+      makeEnrollments.stderr.on('data', (data) => {
+          console.log(`tderr: ${data}`);
+      });
+      makeEnrollments.on('close', (code) => {
+          res.end(JSON.stringify(result));
+      });
+  });
+})
+
+app.get('/voice-search', (req, res) => {
+  const {spawn} = require('child_process');
+  const voiceSearch = spawn('./voice_search.sh', [ ], {cwd: process.env.COMMANDS_EXECUTION_DIRECTORY });
+  result = '';
+  voiceSearch.stdout.on('data', (chunk) => {
+    result += chunk.toString('utf-8');
+  });
+  voiceSearch.stderr.on('data', (data) => {
+      console.log(`tderr: ${data}`);
+  });
+  voiceSearch.on('close', (code) => {
+    let response = {};
+    response.enrollments = result.replace(/_/g , " ");
+    res.end(JSON.stringify(response));
+  });
+})
+
 app.listen(port, () => console.log(`Example app listening on port ${port}!`))
